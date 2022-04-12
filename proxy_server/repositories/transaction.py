@@ -18,7 +18,6 @@ class TransactionRepository(BaseRepository):
             updated_at=datetime.datetime.utcnow(),
         )
         values = {**transaction.dict()}
-        print(values)
         values.pop("id", None)
         query = transactions.insert().values(**values)
         transaction.id = await self.database.execute(query)

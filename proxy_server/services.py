@@ -16,11 +16,9 @@ async def post_transaction(url, session, data):
         header = {'X-CSRFToken': csrf}
         cookies = {'csrftoken': csrf}
         async with session.post(url, data=data, headers=header, cookies=cookies) as response:
-            print('post')
             if response.status == 200:
                 r = await response.read()
                 data = json.loads(r)
-                print(data)
                 if not data.get('error', ''):
                     id_transaction = int(data.get('id_transaction'))
                     transfer_status = data.get('transfer_status')
@@ -45,6 +43,5 @@ async def push_transactions():
                         "transfer_amount": transaction.transfer_amount,
                         "transfer_choice": transaction.transfer_choice
                     }
-                    print(transaction.id)
                     await post_transaction(URL_TRANSACTION_MAIN_SERVER, session, data)
         await asyncio.sleep(10)

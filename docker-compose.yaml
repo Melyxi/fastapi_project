@@ -1,0 +1,54 @@
+version: '3.1'
+
+services:
+  db1:
+    image: postgres:13.4
+    privileged: true
+    ports:
+      - 24322:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: main_server
+
+  db2:
+    image: postgres:13.4
+    privileged: true
+    ports:
+      - 24321:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: proxy_server
+
+
+  mainserver:
+    build: ./main_server
+    privileged: true
+    ports:
+      - 8080:8080
+    command: bash -c "
+        python manage.py migrate &&
+        python manage.py fill_user_balance &&
+        python manage.py runserver 0.0.0.0:8080
+      "
+
+    depends_on:
+      - db1
+
+  proxyserver:
+    build: ./proxy_server
+    privileged: true
+    ports:
+      - 8000:8000
+    command: bash -c "
+      python main.py
+      "
+    links:
+      - mainserver
+      - db2
+
+    depends_on:
+      - db2
+      - mainserver
+

@@ -7,7 +7,7 @@ from main.models import UserModel
 
 
 def main(request):
-    users = UserModel.objects.all()
+    users = UserModel.objects.all().order_by('pk')
     return render(request, 'main/index.html', context={'objects_list': users})
 
 
