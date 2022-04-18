@@ -10,14 +10,14 @@ router = APIRouter()
 
 
 @router.post("/", response_model=Transaction)
-async def read_users(
+async def post_transaction(
         transaction: TransactionIn,
         transactions: TransactionRepository = Depends(get_transaction_repository)):
     return await transactions.create_transaction(t=transaction)
 
 
 @router.get("/", response_model=List[Transaction])
-async def read_users(
+async def get_transaction(
         transactions: TransactionRepository = Depends(get_transaction_repository), ):
     return await transactions.get_transaction_waiting()
 
