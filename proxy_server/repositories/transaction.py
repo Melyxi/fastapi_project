@@ -1,5 +1,6 @@
 import datetime
 from typing import List, Optional
+from sqlalchemy import text
 
 from db.transaction import TransactionStatusEnum, transactions
 from models.transaction import TransactionIn, Transaction, TransactionUpdate
@@ -24,7 +25,7 @@ class TransactionRepository(BaseRepository):
         return transaction
 
     async def get_transaction_waiting(self) -> List[Transaction]:
-        query = transactions.select().where(transactions.c.transfer_status == TransactionStatusEnum.waiting)
+        query = transactions.select().where(transactions.c.transfer_status == TransactionStatusEnum.waiting).order_by(text('id asc'))
         return await self.database.fetch_all(query=query)
 
     async def get_by_id(self, id: int) -> Optional[Transaction]:
